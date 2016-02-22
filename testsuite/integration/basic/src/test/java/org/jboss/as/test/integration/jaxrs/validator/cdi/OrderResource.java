@@ -30,8 +30,14 @@ import javax.ws.rs.Produces;
 @Path("order/{id}")
 public class OrderResource {
 
-    @GET
+   //CXF can't marshalling the Object to text/plain content type. Enable this after this feature is added in cxf
+   /* @GET
     public OrderModel get(@PathParam("id") @CustomMax int id) {
         return new OrderModel(id);
+    }*/
+    
+    @GET
+    public String get(@PathParam("id") @CustomMax int id) {
+        return new OrderModel(id).toString();
     }
 }
