@@ -46,7 +46,6 @@ public class JaxrsDependencyProcessor implements DeploymentUnitProcessor {
 
     // public static final ModuleIdentifier RESTEASY_ATOM =
     // ModuleIdentifier.create("org.jboss.resteasy.resteasy-atom-provider");
-    public static final ModuleIdentifier JAXRS_CDI = ModuleIdentifier.create("org.jboss.ws.cxf.jbossws-cxf-server");
     // public static final ModuleIdentifier RESTEASY_CRYPTO = ModuleIdentifier.create("org.jboss.resteasy.resteasy-crypto");
     // public static final ModuleIdentifier RESTEASY_VALIDATOR_11 =
     // ModuleIdentifier.create("org.jboss.resteasy.resteasy-validator-provider-11");
@@ -67,6 +66,7 @@ public class JaxrsDependencyProcessor implements DeploymentUnitProcessor {
     // public static final ModuleIdentifier JAXB_API = ModuleIdentifier.create("javax.xml.bind.api");
     // public static final ModuleIdentifier JSON_API = ModuleIdentifier.create("javax.json.api");
     public static final ModuleIdentifier JAXRS_API = ModuleIdentifier.create("javax.ws.rs.api");
+    public static final ModuleIdentifier JAXRS_CDI = ModuleIdentifier.create("org.jboss.ws.cxf.jbossws-cxf-jaxrs-cdi");
 
     /**
      * We include this so that jackson annotations will be available, otherwise they will be ignored which leads to confusing
