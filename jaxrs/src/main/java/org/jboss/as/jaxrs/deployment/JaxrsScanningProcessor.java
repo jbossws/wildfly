@@ -115,33 +115,6 @@ public class JaxrsScanningProcessor implements DeploymentUnitProcessor {
 
     }
 
-//    public static final Set<String> BOOT_CLASSES = new HashSet<String>();
-//
-//    static {
-//        Collections.addAll(BOOT_CLASSES, ResteasyBootstrapClasses.BOOTSTRAP_CLASSES);
-//    }
-
-//    /**
-//     * If any servlet/filter classes are declared, then we probably don't want to scan.
-//     */
-//    protected boolean hasBootClasses(JBossWebMetaData webdata) throws DeploymentUnitProcessingException {
-//        if (webdata.getServlets() != null) {
-//            for (ServletMetaData servlet : webdata.getServlets()) {
-//                String servletClass = servlet.getServletClass();
-//                if (BOOT_CLASSES.contains(servletClass))
-//                    return true;
-//            }
-//        }
-//        if (webdata.getFilters() != null) {
-//            for (FilterMetaData filter : webdata.getFilters()) {
-//                if (BOOT_CLASSES.contains(filter.getFilterClass()))
-//                    return true;
-//            }
-//        }
-//        return false;
-//
-//    }
-
     protected void scanWebDeployment(final DeploymentUnit du, final JBossWebMetaData webdata, final ClassLoader classLoader, final JAXRSDeploymentMetadata jaxrsDeploymentData) throws DeploymentUnitProcessingException {
 
 
@@ -176,12 +149,6 @@ public class JaxrsScanningProcessor implements DeploymentUnitProcessor {
                 } else if (param.getParamName().equals(JAXRS_SCAN_RESOURCES)) {
                     jaxrsDeploymentData.setScanResources(valueOf(JAXRS_SCAN_RESOURCES, param.getParamValue()));
                 }
-                // TODO: look at UNWRAPPED_EXCEPTIONS
-                // else if
-                // (param.getParamName().equals(ResteasyContextParameters.RESTEASY_UNWRAPPED_EXCEPTIONS))
-                // {
-                // jaxrsDeploymentData.setUnwrappedExceptionsParameterSet(true);
-                // }
             }
         }
 
@@ -280,7 +247,6 @@ public class JaxrsScanningProcessor implements DeploymentUnitProcessor {
         }
     }
     public static final Set<String> BOOT_CLASSES = new HashSet<String>();
-    //TODO: if we need to support this ?  and other boot class ?
     static {
         Collections.addAll(BOOT_CLASSES, WSFServlet.class.getName());
     }

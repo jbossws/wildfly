@@ -23,8 +23,8 @@ package org.jboss.as.jaxrs.deployment;
 
 import org.jboss.as.ee.structure.DeploymentType;
 import org.jboss.as.ee.structure.DeploymentTypeMarker;
-import org.jboss.as.jaxrs.ASHelper;
 import org.jboss.as.jaxrs.logging.JaxrsLogger;
+import org.jboss.as.server.deployment.AttachmentKey;
 import org.jboss.as.server.deployment.DeploymentPhaseContext;
 import org.jboss.as.server.deployment.DeploymentUnit;
 import org.jboss.as.server.deployment.DeploymentUnitProcessingException;
@@ -65,7 +65,7 @@ public final class AspectDeploymentProcessor implements DeploymentUnitProcessor 
         final DeploymentUnit unit = phaseContext.getDeploymentUnit();
         if (JaxrsDeploymentMarker.isJaxrsDeployment(unit) && DeploymentTypeMarker.isType(DeploymentType.WAR, unit)) {
             ensureAspectInitialized();
-            final Deployment dep = ASHelper.getRequiredAttachment(unit, JaxrsAttachments.JAXRS_DEPLOYMENT_KEY);
+            final Deployment dep = getRequiredAttachment(unit, JaxrsAttachments.JAXRS_DEPLOYMENT_KEY);
             JaxrsLogger.JAXRS_LOGGER.tracef("%s start: %s", aspect, unit.getName());
             ClassLoader origClassLoader = WildFlySecurityManager.getCurrentContextClassLoaderPrivileged();
             try {
@@ -82,7 +82,7 @@ public final class AspectDeploymentProcessor implements DeploymentUnitProcessor 
     @Override
     public void undeploy(final DeploymentUnit unit) {
         if (JaxrsDeploymentMarker.isJaxrsDeployment(unit) && DeploymentTypeMarker.isType(DeploymentType.WAR, unit)) {
-            final Deployment dep = ASHelper.getRequiredAttachment(unit, JaxrsAttachments.JAXRS_DEPLOYMENT_KEY);
+            final Deployment dep = getRequiredAttachment(unit, JaxrsAttachments.JAXRS_DEPLOYMENT_KEY);
             JaxrsLogger.JAXRS_LOGGER.tracef("%s stop: %s", aspect, unit.getName());
             ClassLoader origClassLoader = WildFlySecurityManager.getCurrentContextClassLoaderPrivileged();
             try {
@@ -108,5 +108,14 @@ public final class AspectDeploymentProcessor implements DeploymentUnitProcessor 
             }
         }
     }
+
+    private static <A> A getRequiredAttachment(final DeploymentUnit unit, final AttachmentKey<A> key) {
+       final A value = unit.getAttachment(key);
+       if (value == null) {
+           throw new IllegalStateException();
+       }
+
+       return value;
+   }
 }
 

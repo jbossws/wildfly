@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source.
- * Copyright 2012, Red Hat, Inc., and individual contributors
+ * Copyright 2016, Red Hat, Inc., and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -52,7 +52,6 @@ import org.jboss.wsf.spi.metadata.JAXRSDeploymentMetadata;
 
 import static org.jboss.as.jaxrs.logging.JaxrsLogger.JAXRS_LOGGER;
 
-import org.jboss.as.jaxrs.JaxrsExtension;
 
 
 /**
@@ -85,8 +84,6 @@ public class JaxrsIntegrationProcessor implements DeploymentUnitProcessor {
         if (jaxrsDepMD == null)
             return;
 
-        deploymentUnit.getDeploymentSubsystemModel(JaxrsExtension.SUBSYSTEM_NAME);
-
         final Map<ModuleIdentifier, JAXRSDeploymentMetadata> attachmentMap = parent.getAttachment(JaxrsAttachments.ADDITIONAL_JAXRS_DEPLOYMENT_DATA);
         final List<JAXRSDeploymentMetadata> additionalData = new ArrayList<JAXRSDeploymentMetadata>();
         final ModuleSpecification moduleSpec = deploymentUnit.getAttachment(Attachments.MODULE_SPECIFICATION);
@@ -103,53 +100,8 @@ public class JaxrsIntegrationProcessor implements DeploymentUnitProcessor {
             }
             jaxrsDepMD.merge(additionalData);
         }
-        if (!jaxrsDepMD.getScannedResourceClasses().isEmpty()) {
-            StringBuffer buf = null;
-            for (String resource : jaxrsDepMD.getScannedResourceClasses()) {
-                if (buf == null) {
-                    buf = new StringBuffer();
-                    buf.append(resource);
-                } else {
-                    buf.append(",").append(resource);
-                }
-            }
-            String resources = buf.toString();
-            JAXRS_LOGGER.infof("Adding JAX-RS resource classes: %s", resources);
-//            setContextParameter(webdata, ResteasyContextParameters.RESTEASY_SCANNED_RESOURCES, resources);
-        }
-        if (!jaxrsDepMD.getScannedProviderClasses().isEmpty()) {
-            StringBuffer buf = null;
-            for (String provider : jaxrsDepMD.getScannedProviderClasses()) {
-                if (buf == null) {
-                    buf = new StringBuffer();
-                    buf.append(provider);
-                } else {
-                    buf.append(",").append(provider);
-                }
-            }
-            String providers = buf.toString();
-            JAXRS_LOGGER.infof("Adding JAX-RS provider classes: %s", providers);
-//            setContextParameter(webdata, ResteasyContextParameters.RESTEASY_SCANNED_PROVIDERS, providers);
-        }
 
-        if (!jaxrsDepMD.getScannedJndiComponentResources().isEmpty()) {
-            StringBuffer buf = null;
-            for (String resource : jaxrsDepMD.getScannedJndiComponentResources()) {
-                if (buf == null) {
-                    buf = new StringBuffer();
-                    buf.append(resource);
-                } else {
-                    buf.append(",").append(resource);
-                }
-            }
-            String providers = buf.toString();
-            JAXRS_LOGGER.infof("Adding JAX-RS jndi component resource classes: %s", providers);
-//            setContextParameter(webdata, ResteasyContextParameters.RESTEASY_SCANNED_JNDI_RESOURCES, providers);
-        }
-
-        if (!jaxrsDepMD.isUnwrappedExceptionsParameterSet()) {
-//            setContextParameter(webdata, ResteasyContextParameters.RESTEASY_UNWRAPPED_EXCEPTIONS, "javax.ejb.EJBException");
-        }
+        logFindings(jaxrsDepMD);
 
         if (jaxrsDepMD.hasBootClasses() || jaxrsDepMD.isDispatcherCreated())
             return;
@@ -187,7 +139,6 @@ public class JaxrsIntegrationProcessor implements DeploymentUnitProcessor {
             if (!servletMappingsExist(webdata, servletName)) {
                 //no mappings, add our own
                 List<String> patterns = new ArrayList<String>();
-                //for some reason the spec requires this to be decoded
                 patterns.add("/*");
                 ServletMappingMetaData mapping = new ServletMappingMetaData();
                 mapping.setServletName(servletName);
@@ -203,6 +154,51 @@ public class JaxrsIntegrationProcessor implements DeploymentUnitProcessor {
             }
 
         }
+    }
+
+    private void logFindings(final JAXRSDeploymentMetadata jaxrsDepMD) {
+       if (JAXRS_LOGGER.isInfoEnabled()) {
+          if (!jaxrsDepMD.getScannedResourceClasses().isEmpty()) {
+             StringBuffer buf = null;
+             for (String resource : jaxrsDepMD.getScannedResourceClasses()) {
+                 if (buf == null) {
+                     buf = new StringBuffer();
+                     buf.append(resource);
+                 } else {
+                     buf.append(",").append(resource);
+                 }
+             }
+             String resources = buf.toString();
+             JAXRS_LOGGER.infof("Adding JAX-RS resource classes: %s", resources);
+         }
+         if (!jaxrsDepMD.getScannedProviderClasses().isEmpty()) {
+             StringBuffer buf = null;
+             for (String provider : jaxrsDepMD.getScannedProviderClasses()) {
+                 if (buf == null) {
+                     buf = new StringBuffer();
+                     buf.append(provider);
+                 } else {
+                     buf.append(",").append(provider);
+                 }
+             }
+             String providers = buf.toString();
+             JAXRS_LOGGER.infof("Adding JAX-RS provider classes: %s", providers);
+         }
+
+         if (!jaxrsDepMD.getScannedJndiComponentResources().isEmpty()) {
+             StringBuffer buf = null;
+             for (String resource : jaxrsDepMD.getScannedJndiComponentResources()) {
+                 if (buf == null) {
+                     buf = new StringBuffer();
+                     buf.append(resource);
+                 } else {
+                     buf.append(",").append(resource);
+                 }
+             }
+             String providers = buf.toString();
+             JAXRS_LOGGER.infof("Adding JAX-RS jndi component resource classes: %s", providers);
+         }
+       }
     }
 
     private void setJBossWSServlet(JBossServletMetaData servlet) {
@@ -268,36 +264,7 @@ public class JaxrsIntegrationProcessor implements DeploymentUnitProcessor {
 
     }
 
-    public static ParamValueMetaData findContextParam(JBossWebMetaData webdata, String name) {
-        List<ParamValueMetaData> params = webdata.getContextParams();
-        if (params == null)
-            return null;
-        for (ParamValueMetaData param : params) {
-            if (param.getParamName().equals(name)) {
-                return param;
-            }
-        }
-        return null;
-    }
-
-    public static ParamValueMetaData findInitParam(JBossWebMetaData webdata, String name) {
-        JBossServletsMetaData servlets = webdata.getServlets();
-        if (servlets == null)
-            return null;
-        for (JBossServletMetaData servlet : servlets) {
-            List<ParamValueMetaData> initParams = servlet.getInitParam();
-            if (initParams != null) {
-                for (ParamValueMetaData param : initParams) {
-                    if (param.getParamName().equals(name)) {
-                        return param;
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
-    public static boolean servletMappingsExist(JBossWebMetaData webdata, String servletName) {
+    private static boolean servletMappingsExist(JBossWebMetaData webdata, String servletName) {
         List<ServletMappingMetaData> mappings = webdata.getServletMappings();
         if (mappings == null)
             return false;
@@ -308,19 +275,4 @@ public class JaxrsIntegrationProcessor implements DeploymentUnitProcessor {
         }
         return false;
     }
-
-
-    public static void setContextParameter(JBossWebMetaData webdata, String name, String value) {
-        ParamValueMetaData param = new ParamValueMetaData();
-        param.setParamName(name);
-        param.setParamValue(value);
-        List<ParamValueMetaData> params = webdata.getContextParams();
-        if (params == null) {
-            params = new ArrayList<ParamValueMetaData>();
-            webdata.setContextParams(params);
-        }
-        params.add(param);
-    }
-
-
 }

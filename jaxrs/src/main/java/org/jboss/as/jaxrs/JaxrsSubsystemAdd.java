@@ -28,7 +28,6 @@ import org.jboss.as.controller.OperationContext;
 import org.jboss.as.controller.registry.Resource;
 import org.jboss.as.jaxrs.deployment.AspectDeploymentProcessor;
 import org.jboss.as.jaxrs.deployment.JaxrsAnnotationProcessor;
-import org.jboss.as.jaxrs.deployment.JaxrsCdiIntegrationProcessor;
 import org.jboss.as.jaxrs.deployment.JaxrsComponentDeployer;
 import org.jboss.as.jaxrs.deployment.JaxrsDependencyProcessor;
 import org.jboss.as.jaxrs.deployment.JaxrsIntegrationProcessor;
@@ -56,15 +55,13 @@ class JaxrsSubsystemAdd extends AbstractBoottimeAddStepHandler {
     protected void performBoottime(final OperationContext context, ModelNode operation, Resource resource) {
 
         ModuleJAXRSClassLoaderProvider.register();
-//        final ServiceTarget serviceTarget = context.getServiceTarget();
         context.addStep(new AbstractDeploymentChainStep() {
             public void execute(DeploymentProcessorTarget processorTarget) {
                 processorTarget.addDeploymentProcessor(JaxrsExtension.SUBSYSTEM_NAME, Phase.PARSE, Phase.PARSE_JAXRS_ANNOTATIONS, new JaxrsAnnotationProcessor());
-//                processorTarget.addDeploymentProcessor(JaxrsExtension.SUBSYSTEM_NAME, Phase.DEPENDENCIES, Phase.DEPENDENCIES_JAXRS_SPRING, new JaxrsSpringProcessor(serviceTarget));
                 processorTarget.addDeploymentProcessor(JaxrsExtension.SUBSYSTEM_NAME, Phase.DEPENDENCIES, Phase.DEPENDENCIES_JAXRS, new JaxrsDependencyProcessor());
                 processorTarget.addDeploymentProcessor(JaxrsExtension.SUBSYSTEM_NAME, Phase.POST_MODULE, Phase.POST_MODULE_JAXRS_SCANNING, new JaxrsScanningProcessor());
                 processorTarget.addDeploymentProcessor(JaxrsExtension.SUBSYSTEM_NAME, Phase.POST_MODULE, Phase.POST_MODULE_JAXRS_COMPONENT, new JaxrsComponentDeployer());
-                processorTarget.addDeploymentProcessor(JaxrsExtension.SUBSYSTEM_NAME, Phase.POST_MODULE, Phase.POST_MODULE_JAXRS_CDI_INTEGRATION, new JaxrsCdiIntegrationProcessor());
+//                processorTarget.addDeploymentProcessor(JaxrsExtension.SUBSYSTEM_NAME, Phase.POST_MODULE, Phase.POST_MODULE_JAXRS_CDI_INTEGRATION, new JaxrsCdiIntegrationProcessor()); //TODO remove Phase
                 processorTarget.addDeploymentProcessor(JaxrsExtension.SUBSYSTEM_NAME, Phase.INSTALL, Phase.INSTALL_JAXRS_DEPLOYMENT, new JaxrsIntegrationProcessor());
                 processorTarget.addDeploymentProcessor(JaxrsExtension.SUBSYSTEM_NAME, Phase.INSTALL, Phase.INSTALL_JAXRS_DEPLOYMENT + 1, new ModelDeploymentProcessor()); //TODO Phase
                 processorTarget.addDeploymentProcessor(JaxrsExtension.SUBSYSTEM_NAME, Phase.INSTALL, Phase.INSTALL_JAXRS_DEPLOYMENT + 2,

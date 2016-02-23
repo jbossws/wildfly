@@ -22,7 +22,6 @@
 
 package org.jboss.as.jaxrs.logging;
 
-import javax.ws.rs.core.Application;
 import org.jboss.as.server.deployment.DeploymentUnitProcessingException;
 import org.jboss.jandex.AnnotationTarget;
 import org.jboss.logging.BasicLogger;
@@ -89,17 +88,17 @@ public interface JaxrsLogger extends BasicLogger {
      *
      * @param servletName the servlet name.
      */
-    @LogMessage(level = WARN)
-    @Message(id = 4, value = "No Servlet mappings found for JAX-RS application: %s either annotate it with @ApplicationPath or add a servlet-mapping in web.xml")
-    void noServletMappingFound(String servletName);
+//    @LogMessage(level = WARN)
+//    @Message(id = 4, value = "No Servlet mappings found for JAX-RS application: %s either annotate it with @ApplicationPath or add a servlet-mapping in web.xml")
+//    void noServletMappingFound(String servletName);
 
     /**
      * Logs a warning message indicating that {@code resteasy.scan} was found in the {@code web.xml} and is not
      * necessary.
      */
-    @LogMessage(level = WARN)
-    @Message(id = 5, value = "%s found and ignored in web.xml. This is not necessary, as Resteasy will use the container integration in the JAX-RS 1.1 specification in section 2.3.2")
-    void resteasyScanWarning(String param);
+//    @LogMessage(level = WARN)
+//    @Message(id = 5, value = "%s found and ignored in web.xml. This is not necessary, as Resteasy will use the container integration in the JAX-RS 1.1 specification in section 2.3.2")
+//    void resteasyScanWarning(String param);
 
     /**
      * Creates an exception indicating the JAX-RS application class could not be loaded.
@@ -117,8 +116,8 @@ public interface JaxrsLogger extends BasicLogger {
      * @param app2 the second application.
      * @return a {@link DeploymentUnitProcessingException} for the error.
      */
-    @Message(id = 7, value = "More than one Application class found in deployment %s and %s")
-    DeploymentUnitProcessingException moreThanOneApplicationClassFound(Class<? extends Application> app1, Class<? extends Application> app2);
+//    @Message(id = 7, value = "More than one Application class found in deployment %s and %s")
+//    DeploymentUnitProcessingException moreThanOneApplicationClassFound(Class<? extends Application> app1, Class<? extends Application> app2);
 
     /**
      * A message indicating only one JAX-RS application class is allowed.
@@ -126,16 +125,16 @@ public interface JaxrsLogger extends BasicLogger {
      * @param sb a builder with application classes.
      * @return the message.
      */
-    @Message(id = 8, value = "Only one JAX-RS Application Class allowed. %s")
-    String onlyOneApplicationClassAllowed(StringBuilder sb);
+//    @Message(id = 8, value = "Only one JAX-RS Application Class allowed. %s")
+//    String onlyOneApplicationClassAllowed(StringBuilder sb);
 
     /**
      * A message indicating the incorrect mapping config.
      *
      * @return the message.
      */
-    @Message(id = 9, value = "Please use either @ApplicationPath or servlet mapping for url path config.")
-    String conflictUrlMapping();
+//    @Message(id = 9, value = "Please use either @ApplicationPath or servlet mapping for url path config.")
+//    String conflictUrlMapping();
 
     /**
      * JAX-RS resource @Path annotation is on a class or interface that is not a view
@@ -151,8 +150,8 @@ public interface JaxrsLogger extends BasicLogger {
     @Message(id = 11, value = "Invalid value for parameter %s: %s")
     DeploymentUnitProcessingException invalidParamValue(String param, String value);
 
-    @Message(id = 12, value = "No spring integration jar found")
-    DeploymentUnitProcessingException noSpringIntegrationJar();
+//    @Message(id = 12, value = "No spring integration jar found")
+//    DeploymentUnitProcessingException noSpringIntegrationJar();
 
 //    @LogMessage(level = WARN)
 //    @Message(id = 13, value = "The context param " + JaxrsSpringProcessor.DISABLE_PROPERTY + " is deprecated, and will be removed in a future release. Please use " + JaxrsSpringProcessor.ENABLE_PROPERTY + " instead")

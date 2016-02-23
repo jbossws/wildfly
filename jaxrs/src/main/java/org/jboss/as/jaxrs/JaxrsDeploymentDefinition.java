@@ -61,6 +61,7 @@ import org.jboss.dmr.ModelType;
  *
  * @author <a href="mailto:ehugonne@redhat.com">Emmanuel Hugonnet</a> (c) 2014 Red Hat, inc.
  */
+//TODO!!! Restore management
 public class JaxrsDeploymentDefinition extends SimpleResourceDefinition {
 
     public static final JaxrsDeploymentDefinition DEPLOYMENT_INSTANCE = new JaxrsDeploymentDefinition(true);
