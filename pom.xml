@@ -5352,6 +5352,18 @@
 
             <dependency>
                 <groupId>org.jboss.ws.cxf</groupId>
+                <artifactId>jbossws-cxf-jaxrs-cdi</artifactId>
+                <version>${version.org.jboss.ws.cxf}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>javax.enterprise</groupId>
+                        <artifactId>cdi-api</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.ws.cxf</groupId>
                 <artifactId>jbossws-cxf-transports-undertow</artifactId>
                 <version>${version.org.jboss.ws.cxf}</version>
                 <exclusions>
